@@ -3,7 +3,7 @@
 this is a mirror of the third drive, since github is a more reliable platform for serving files than google drive. you can still check out the google drive [here](https://drive.google.com/drive/u/1/folders/14MTq198QE4jI3fCnaP71K2fgt948zmlL)
 
 <sub>older drives:</sub> <br>
-<sup>[drive #1 by lily](https://drive.sogfulday.today) - [drive #2 by cv](https://drive.sogfulday.today)</sup>
+<sup>[drive #1 by lily](https://drive.sogfulday.today) - [drive #2 by cv](https://drive2.sogfulday.today)</sup>
 
 ##### file names
 each image has a random self-explanatory name (or an inside joke) assigned for convenience. these are usually really bad and wear out as the time passes so apologies for that.. <br>
