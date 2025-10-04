@@ -31,12 +31,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: List images n stuff
+        run: |
+          cd 'soggy cat'
+          find . -type f | sed 's|^\./||' | jq -R . | jq -s . > images.json
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
           path: 'soggy cat'
       - name: Deploy to GitHub Pages
         id: deployment
