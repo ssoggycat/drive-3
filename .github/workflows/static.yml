@@ -31,10 +31,38 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: List images n stuff
+        with:
+          sparse-checkout: 'soggy cat'
+      - name: Install WebP
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y webp
+      - name: Generate WebP Drive
+        run: |
+          mkdir "soggy cat"/webp
+          find "soggy cat"/* -maxdepth 0 -type f -print0 | xargs -0 -P 4 -I {} bash -euo pipefail -c '
+            filename=$(basename "{}")
+            dims=($(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=nw=1:nk=1 "{}"))
+            width=${dims[0]}
+            height=${dims[1]}
+            resize_opts=""
+            if [ "$width" -gt 1024 ] || [ "$height" -gt 1024 ]; then
+              if [ "$width" -ge "$height" ]; then
+                resize_opts="-resize 1024 0"
+              else
+                resize_opts="-resize 0 1024"
+              fi
+            fi
+            cwebp -preset photo -mt -alpha_filter none -noalpha -sharp_yuv -pre 2 $resize_opts "{}" -o "soggy cat/webp/${filename%.*}.webp"
+          '
+      - name: Make Lists
         run: |
           cd 'soggy cat'
           find * -maxdepth 0 -type f | jq -R . | jq -s . > images.json
+          cd vids
+          find * -maxdepth 0 -type f | jq -R . | jq -s . > ../videos.json
+          cd ../webp
+          find * -maxdepth 0 -type f | jq -R . | jq -s . > ../webp.json
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
