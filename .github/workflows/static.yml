@@ -52,7 +52,7 @@ jobs:
                 resize_opts="-resize 0 1024"
               fi
             fi
-            cwebp -preset photo -mt -alpha_filter none -noalpha -sharp_yuv -pre 2 $resize_opts "{}" -o "soggy cat/webp/${filename%.*}.webp"
+            cwebp -preset photo -alpha_filter none -noalpha -sharp_yuv $resize_opts "{}" -o "soggy cat/webp/${filename%.*}.webp"
           '
       - name: Make Lists
         run: |
