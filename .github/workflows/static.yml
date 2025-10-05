@@ -37,16 +37,16 @@ jobs:
         uses: FedericoCarboni/setup-ffmpeg@v3.1
       - name: Install WebP
         run: |
-          sudo apt-get remove --purge man-db
+          sudo rm -f /var/lib/man-db/auto-update
           sudo apt-get install -y webp
       - name: Generate WebP Drive
         run: |
           mkdir "soggy cat"/webp
           find "soggy cat"/* -maxdepth 0 -type f -print0 | xargs -0 -I {} bash -euo pipefail -c '
             filename=$(basename "{}")
-            echo {}
+            echo "{}"
             dims=($(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=nw=1:nk=1 "{}"))
-            echo ${dims[@]}
+            echo "${dims[@]}"
             width=${dims[0]}
             height=${dims[1]}
             cwebp_resize=""
@@ -60,8 +60,8 @@ jobs:
                 ffmpeg_resize="-1:1024"
               fi
             fi
-            if ! cwebp -preset photo -short -alpha_filter none -noalpha -sharp_yuv -q 70 $cwebp_resize "{}" -o "soggy cat/webp/${filename%.*}.webp"; then
-              ffmpeg -i "{}" -vf "scale=$ffmpeg_resize" -quality 70 -compression_level 6 "soggy cat/webp/${filename%.*}.webp"
+            if ! cwebp -preset photo -quiet -alpha_filter none -noalpha -sharp_yuv -q 70 $cwebp_resize "{}" -o "soggy cat/webp/${filename%.*}.webp"; then
+              ffmpeg -v error -i "{}" -vf "scale=$ffmpeg_resize" -quality 70 -compression_level 6 "soggy cat/webp/${filename%.*}.webp"
             fi
           '
       - name: Make Lists
