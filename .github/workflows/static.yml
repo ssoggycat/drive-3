@@ -47,15 +47,19 @@ jobs:
             dims=($(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=nw=1:nk=1 "{}"))
             width=${dims[0]}
             height=${dims[1]}
-            resize_opts=""
+            cwebp_resize=""
+            ffmpeg_resize=""
             if [ "$width" -gt 1024 ] || [ "$height" -gt 1024 ]; then
               if [ "$width" -ge "$height" ]; then
-                resize_opts="-resize 1024 0"
+               cwebp_resize="-resize 1024 0"
+               ffmpeg_resize="1024:-1"
               else
-                resize_opts="-resize 0 1024"
+                cwebp_resize="-resize 0 1024"
+                ffmpeg_resize="-1:1024"
               fi
             fi
-            cwebp -preset photo -alpha_filter none -noalpha -sharp_yuv $resize_opts "{}" -o "soggy cat/webp/${filename%.*}.webp"
+            cwebp -preset photo -alpha_filter none -noalpha -sharp_yuv -q 70 $cwebp_resize "{}" -o "soggy cat/webp/${filename%.*}.webp" || \
+            ffmpeg -v error -i "{}" -vf "scale=$ffmpeg_resize" -quality 70 -compression_level 6 "soggy cat/webp/${filename%.*}.webp"
           '
       - name: Make Lists
         run: |
