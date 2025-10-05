@@ -34,9 +34,10 @@ jobs:
         with:
           sparse-checkout: 'soggy cat'
       - name: Install FFmpeg
-        uses: FedericoCarboni/setup-ffmpeg@v3
+        uses: FedericoCarboni/setup-ffmpeg@v3.1
       - name: Install WebP
         run: |
+          sudo apt-get remove --purge man-db
           sudo apt-get install -y webp
       - name: Generate WebP Drive
         run: |
