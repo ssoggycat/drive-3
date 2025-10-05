@@ -44,7 +44,9 @@ jobs:
           mkdir "soggy cat"/webp
           find "soggy cat"/* -maxdepth 0 -type f -print0 | xargs -0 -I {} bash -euo pipefail -c '
             filename=$(basename "{}")
+            echo {}
             dims=($(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=nw=1:nk=1 "{}"))
+            echo ${dims[@]}
             width=${dims[0]}
             height=${dims[1]}
             cwebp_resize=""
