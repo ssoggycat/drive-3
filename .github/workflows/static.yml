@@ -33,10 +33,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           sparse-checkout: 'soggy cat'
-      - name: Install WebP
+      - name: Install Packages
         run: |
-          sudo apt-get update
-          sudo apt-get install -y webp
+          sudo apt-get install -y webp ffmpeg
       - name: Generate WebP Drive
         run: |
           mkdir "soggy cat"/webp
