@@ -1,0 +1,79 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: 'soggy cat'
+      - name: Install FFmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v3.1
+      - name: Install WebP
+        run: |
+          sudo rm -f /var/lib/man-db/auto-update
+          sudo apt-get install -y webp
+      - name: Generate WebP Drive
+        run: |
+          mkdir "soggy cat"/webp
+          find "soggy cat"/* -maxdepth 0 -type f -print0 | xargs -P 4 -0 -I {} bash -euo pipefail -c '
+            filename=$(basename "{}")
+            dims=($(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=nw=1:nk=1 "{}"))
+            width=${dims[0]}
+            height=${dims[1]}
+            cwebp_resize=""
+            ffmpeg_resize=""
+            if [ "$width" -gt 1024 ] || [ "$height" -gt 1024 ]; then
+              if [ "$width" -ge "$height" ]; then
+               cwebp_resize="-resize 1024 0"
+               ffmpeg_resize="1024:-1"
+              else
+                cwebp_resize="-resize 0 1024"
+                ffmpeg_resize="-1:1024"
+              fi
+            fi
+            if ! cwebp -preset photo -mt -quiet -alpha_filter none -noalpha -sharp_yuv -q 70 $cwebp_resize "{}" -o "soggy cat/webp/${filename%.*}.webp"; then
+              ffmpeg -v error -i "{}" -vf "scale=$ffmpeg_resize" -quality 70 -compression_level 6 "soggy cat/webp/${filename%.*}.webp"
+            fi
+          '
+      - name: Make Lists
+        run: |
+          cd 'soggy cat'
+          find * -maxdepth 0 -type f | jq -R . | jq -s . > images.json
+          find vids/* -maxdepth 0 -type f | jq -R . | jq -s . > videos.json
+          find webp/* -maxdepth 0 -type f | jq -R . | jq -s . > webp.json
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'soggy cat'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
