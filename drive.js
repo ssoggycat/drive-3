@@ -277,7 +277,10 @@
     medicommentslist.innerHTML = "";
     const login = document.createElement("div");
     login.className = "mediacomment";
-    login.innerHTML = `<div class="mediacommenttext">sign in to comment (not implemented yet)</div>`;
+    login.innerHTML =
+      `<div class="mediacommenttext">` +
+      `<a class="discordlogin" href="https://discord.com/oauth2/authorize?client_id=1501279291848003744&response_type=code&redirect_uri=http%3A%2F%2F127.0.0.1%3A6969&scope=identify" target="_blank" rel="noopener noreferrer">sign in with discord</a>` +
+      `</div>`;
     medicommentslist.appendChild(login);
     if (!comments.length) {
       const empty = document.createElement("div");
@@ -293,9 +296,16 @@
       const txt = esc(c.plain || "");
       const when = esc(formattime(c.id));
       const pfp = typeof c.authorpfp === "string" ? c.authorpfp : "";
+      const src = String(pfp);
+      const isgoogle = src.includes("googleusercontent.com");
+      const isdiscord = src.includes("discordapp.com") || src.includes("discord.com");
+      const badge = isgoogle ? "assets/svg/drive.svg" : isdiscord ? "assets/svg/discord.svg" : "";
       card.innerHTML =
         `<div class="mediacommentrow">` +
+        `<div class="mediacommentpfpwrap">` +
         `<img class="mediacommentpfp" alt="" referrerpolicy="no-referrer" src="${esc(pfp)}">` +
+        (badge ? `<img class="mediacommentsource" alt="" src="${badge}">` : ``) +
+        `</div>` +
         `<div>` +
         `<div class="mediacommentmeta">` +
         `<div class="mediacommentauthor">${author}</div>` +
@@ -443,6 +453,7 @@
   if (backbutton) backbutton.addEventListener("click", gobackfolder);
   if (readmebutton) readmebutton.addEventListener("click", togglereadme);
   if (commentsbutton) commentsbutton.addEventListener("click", () => {
+    setcommentsopen(!state.commentsOpen);
     if (medialightbox && !medialightbox.hidden) {
       rendercommentpanel(lightboxcomments);
       renderregions(lightboxcomments);
