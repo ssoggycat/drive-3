@@ -14,10 +14,20 @@ html, body {
     color: #eee; background: #131314;
 }
 
-.appshell {
+.googeldraiv {
     display: flex; height: 100%;
     min-height: 0;
 }
+
+:any-link {
+    color: #8ab4f8;
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+}
+:is(a, b, s, i, p, span, em,
+    button, input, textarea,
+    h1, h2, h3, h4, h5, h6):not(.readmesidebar *) {user-select: none}
+img {-webkit-user-drag: none}
 
 /*//////////////////////////////////////////////////////////////////////*/
 
@@ -28,7 +38,7 @@ html, body {
     transition: none;
 }
 
-.appshell:not(.readmeopen) .readmesidebar {
+.googeldraiv:not(.readmeopen) .readmesidebar {
     width: 0; min-width: 0; opacity: 0;
     pointer-events: none;
 }
@@ -51,11 +61,6 @@ h1, h2, h3, h4, h5, h6 {font-weight: 200}
 }
 
 .readmedoc p {color: #ccc; font-size: 13px}
-:any-link {
-    color: #8ab4f8;
-    text-decoration-line: underline;
-    text-decoration-style: wavy;
-}
 
 .readmedoc img {
     display: block; width: 100%;
@@ -89,19 +94,13 @@ hr {
 .searchbar {
     display: flex; align-items: center;
     gap: 4px; background: #1e1f20;
-    border-radius: 99px;
-    height: 3em;
-    padding: 0 12px;
+    border-radius: 99px; height: 3em;
+    padding: 12px 0 12px 12px;
 }
 .searchbar .searchinput {min-width: 0}
 .searchbar .viewtoggle.insearch {
-    margin-left: auto;
-    height: calc(3em - 10px);
-    padding: 3px;
+    margin-left: auto; height: 3em;
     background: rgba(0,0,0,0.18);
-}
-.searchbar .viewtoggle.insearch .viewbutton {
-    height: calc(3em - 16px);
 }
 .searchinput {
     font-family: "google sans";
@@ -113,7 +112,6 @@ hr {
 .headercontrols {
     display: flex;
     align-items: center;
-    gap: 6px;
 }
 
 .headericonbutton {
@@ -245,9 +243,7 @@ hr {
     gap: 16px;
 }
 
-.filegrid.listmode {
-    grid-template-columns: 1fr; gap: 4px;
-}
+.filegrid.listmode {grid-template-columns: 1fr; gap: 4px}
 
 .filecard {
     background: #1b1b1b; border-radius: 10px;
@@ -275,7 +271,7 @@ hr {
 /*//////////////////////////////////////////////////////////////////////*/
 
 .thumb {
-    aspect-ratio: 4 / 3; background: #0e0e0f;
+    aspect-ratio: 1 / 1; background: #0e0e0f;
     display: flex; align-items: center;
     justify-content: center; overflow: hidden;
 }
@@ -303,23 +299,7 @@ hr {
 
 .loadingstate, .emptystate {
     grid-column: 1 / -1; text-align: center;
-    padding: 48px 24px; color: #9aa0a6;
-}
 
-.appshell.narrowaspect.readmeopen .drivemain {
-    display: none;
-}
-
-.appshell.narrowaspect.readmeopen .readmesidebar {
-    position: fixed;
-    inset: 0;
-    z-index: 400;
-    width: 100% !important;
-    min-width: 0 !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    background: #131314;
-    border-inline-end: none;
 }
 
 @media (max-width: 770px) {
@@ -338,8 +318,8 @@ hr {
     .headercontrols {grid-area: actions; justify-self: end}
     .headeractions {display: contents}
 
-    .appshell.readmeopen .drivemain {display: none}
-    .appshell.readmeopen .readmesidebar {
+    .googeldraiv.readmeopen .drivemain {display: none}
+    .googeldraiv.readmeopen .readmesidebar {
         position: fixed;
         inset: 0;
         z-index: 400;
@@ -349,7 +329,7 @@ hr {
         pointer-events: auto !important;
         background: #131314;
     }
-    .appshell.readmeopen .readmeclose {
+    .googeldraiv.readmeopen .readmeclose {
         display: inline-grid;
     }
 }
@@ -472,8 +452,11 @@ hr {
 }
 
 .mediacomments {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    bottom: 8px;
     width: min(360px, 34vw);
-    height: 100%;
     background: rgba(19, 19, 20, 0.9);
     border: 1px solid rgba(138,180,248,0.2);
     border-radius: 10px;

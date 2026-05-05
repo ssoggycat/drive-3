@@ -15,7 +15,7 @@
     refreshtime = document.querySelector(".refreshtime"),
     viewlist = document.querySelector(".viewlist"),
     viewsquare = document.querySelector(".viewsquare"),
-    appshell = document.querySelector(".appshell"),
+    googeldraiv = document.querySelector(".googeldraiv"),
     backbutton = document.querySelector(".backbutton"),
     readmebutton = document.querySelector(".readmebutton"),
     commentsbutton = document.querySelector(".commentsbutton"),
@@ -44,6 +44,25 @@
     listmode: false, truncated: false,
     commentsOpen: false,
   };
+
+  function loadsettings() {
+    try {
+      const s = JSON.parse(localStorage.getItem("settings") || "{}");
+      return s && typeof s === "object" ? s : {};
+    } catch { return {} }
+  }
+  function savesettings(next) {
+    try { localStorage.setItem("settings", JSON.stringify(next)) } catch (_) { }
+  }
+  function setsetting(key, value) {
+    const s = loadsettings();
+    s[key] = value;
+    savesettings(s);
+  }
+  function getsetting(key, fallback) {
+    const s = loadsettings();
+    return s[key] === undefined ? fallback : s[key];
+  }
 
   let pathhistory = [];
   const svg = {
@@ -95,8 +114,8 @@
     const meta = await githubfetch(`/repos/ssoggycat/drive-3`);
     state.branch = meta.default_branch || "main";
     const branch = await githubfetch(`/repos/ssoggycat/drive-3/branches/${state.branch}`);
-    const commit = await githubfetch(`/repos/ssoggycat/drive-3/commits/${branch.commit.sha}`);
-    const tree = await githubfetch(`/repos/ssoggycat/drive-3/git/trees/${commit.commit.tree.sha}?recursive=1`);
+    const gitcommit = await githubfetch(`/repos/ssoggycat/drive-3/git/commits/${branch.commit.sha}`);
+    const tree = await githubfetch(`/repos/ssoggycat/drive-3/git/trees/${gitcommit.tree.sha}?recursive=1`);
     const filtered = (Array.isArray(tree.tree) ? tree.tree : [])
       .filter((x) => x.path === rootprefix || x.path.startsWith(`${rootprefix}/`))
       .map((x) => ({ ...x, path: x.path.slice(`${rootprefix}/`.length) }))
@@ -128,29 +147,29 @@
   }
 
   function updatereadmepreference(open) {
-    localStorage.setItem(mqnarrow.matches ? "readmeNarrow" : "readmeWide", open ? "1" : "0");
+    setsetting(mqnarrow.matches ? "readmeNarrow" : "readmeWide", open ? 1 : 0);
   }
   function readmestartstate() {
-    return mqnarrow.matches ? localStorage.getItem("readmeNarrow") === "1" : localStorage.getItem("readmeWide") !== "0";
+    return mqnarrow.matches ? getsetting("readmeNarrow", 0) === 1 : getsetting("readmeWide", 1) !== 0;
   }
   function togglereadme() {
-    if (!appshell) return;
-    const open = !appshell.classList.contains("readmeopen");
-    appshell.classList.toggle("readmeopen", open);
+    if (!googeldraiv) return;
+    const open = !googeldraiv.classList.contains("readmeopen");
+    googeldraiv.classList.toggle("readmeopen", open);
     if (readmebutton) readmebutton.classList.toggle("readmeclosed", !open);
     updatereadmepreference(open);
   }
   function updatenarrowclass() {
-    appshell.classList.toggle("narrowaspect", mqnarrow.matches);
+    googeldraiv.classList.toggle("narrowaspect", mqnarrow.matches);
   }
   (mqnarrow.addEventListener ? mqnarrow.addEventListener("change", updatenarrowclass) : mqnarrow.addListener(updatenarrowclass));
   updatenarrowclass();
 
-  if (appshell) {
-    appshell.classList.toggle("readmeopen", readmestartstate());
+  if (googeldraiv) {
+    googeldraiv.classList.toggle("readmeopen", readmestartstate());
     if (readmebutton)
-      readmebutton.classList.toggle("readmeclosed", !appshell.classList.contains("readmeopen"));
-    appshell.classList.add("initialized");
+      readmebutton.classList.toggle("readmeclosed", !googeldraiv.classList.contains("readmeopen"));
+    googeldraiv.classList.add("initialized");
   }
 
   function updatebackdisabled() {
@@ -191,10 +210,9 @@
         card.className = "filecard";
         const isimg = imageext.test(f.name);
         const isvid = videoext.test(f.name);
-        card.innerHTML = `<div class="filehead">${iconfor(f.name)}<span class="name"></span><button type="button" class="cardmore" aria-label="More">⋮</button></div><div class="thumb">${isimg ? `<img src="${rawurl(f.path)}" alt="" loading="lazy" />` : '<div class="thumbfallback">click to open</div>'}</div>`;
+        card.innerHTML = `<div class="filehead">${iconfor(f.name)}<span class="name"></span></div><div class="thumb">${isimg ? `<img src="${rawurl(f.path)}" alt="" loading="lazy" />` : '<div class="thumbfallback">click to open</div>'}</div>`;
         card.querySelector(".name").textContent = f.name;
         card.addEventListener("click", (e) => {
-          if (e.target instanceof Element && e.target.closest(".cardmore")) return;
           if (isimg || isvid) {
             openlightbox(rawurl(f.path), f.path, !!isvid);
             return;
@@ -227,6 +245,7 @@
     state.commentsOpen = show;
     if (commentsbutton)
       commentsbutton.classList.toggle("commentsmuted", !show);
+    setsetting("commentsEnabled", show ? 1 : 0);
   }
 
   async function loadcommentsindex() {
@@ -364,7 +383,7 @@
       v.src = url;
       v.autoplay = true;
       mediacontent.appendChild(v);
-      rendercommentpanel([]);
+      if (medicomments) { medicomments.hidden = true; medicommentslist.innerHTML = ""; }
     } else {
       const img = document.createElement("img");
       img.src = url;
@@ -413,9 +432,10 @@
         return;
       }
     }
-    drivegrid.innerHTML = '<div class="loadingstate">loading from github..</div>';
+    const stoploading = startloading();
     try {
       const fresh = await fetchtreefresh();
+      stoploading();
       state.tree = fresh.tree;
       state.branch = fresh.branch;
       state.truncated = fresh.truncated;
@@ -425,8 +445,25 @@
       updatebackdisabled();
       rendergrid();
     } catch (e) {
+      stoploading();
       drivegrid.innerHTML = `<div class="errorstate">couldnt load repo :( ${esc(e.message || String(e))}</div>`;
     }
+  }
+
+  function startloading() {
+    let dots = 0;
+    const icon = '<img class="sogdot" alt=\"\" src=\"assets/svg/sog.svg\">';
+    const wrap = document.createElement("div");
+    wrap.className = "loadingstate sogloading";
+    drivegrid.innerHTML = "";
+    drivegrid.appendChild(wrap);
+    function tick() {
+      dots = (dots % 3) + 1;
+      wrap.innerHTML = icon.repeat(dots);
+    }
+    tick();
+    const t = window.setInterval(tick, 450);
+    return () => window.clearInterval(t);
   }
 
   function setview(listmode) {
@@ -437,8 +474,8 @@
   }
 
   function updatereadmeicon() {
-    if (!readmebutton || !appshell) return;
-    readmebutton.classList.toggle("readmeclosed", !appshell.classList.contains("readmeopen"));
+    if (!readmebutton || !googeldraiv) return;
+    readmebutton.classList.toggle("readmeclosed", !googeldraiv.classList.contains("readmeopen"));
   }
 
   searchinput.addEventListener("input", () => { state.filter = searchinput.value.trim(); rendergrid() });
@@ -473,8 +510,8 @@
       closelightbox();
       return;
     }
-    if (appshell && mqnarrow.matches && appshell.classList.contains("readmeopen")) {
-      appshell.classList.remove("readmeopen");
+    if (googeldraiv && mqnarrow.matches && googeldraiv.classList.contains("readmeopen")) {
+      googeldraiv.classList.remove("readmeopen");
       updatereadmepreference(false);
       updatereadmeicon();
     }
@@ -482,7 +519,7 @@
 
   updatebackdisabled();
   updatereadmeicon();
-  setcommentsopen(false);
+  setcommentsopen(getsetting("commentsEnabled", 0) === 1);
   loadtree(false);
 
 })();
