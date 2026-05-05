@@ -19,17 +19,23 @@ html, body {
     min-height: 0;
 }
 
-.appshell:not(.initialized) .readmesidebar {
-    transition: none;
-}
-
 /*//////////////////////////////////////////////////////////////////////*/
 
 .readmesidebar {
     width: min(320px, 38vw); min-width: 120px;
     background: rgba(128,128,128,0.05); 
     overflow: hidden; flex-shrink: 0;
-    transition: width 0.22s ease, min-width 0.22s ease, opacity 0.18s ease;
+    transition: none;
+}
+
+.appshell:not(.readmeopen) .readmesidebar {
+    width: 0; min-width: 0; opacity: 0;
+    pointer-events: none;
+}
+
+.readmeclose {
+    display: none;
+    margin: 0 0 0.5em; /* looks a bit awkward being too close to the banner */
 }
 
 /* readme special markdown :p */
@@ -37,7 +43,7 @@ h1, h2, h3, h4, h5, h6 {font-weight: 200}
 
 .readmescroll {
     height: 100%; overflow: auto;
-    padding: 16px 18px 24px;
+    padding: 1em;
 }
 .readmedoc {
     max-width: 100%; 
@@ -57,7 +63,7 @@ h1, h2, h3, h4, h5, h6 {font-weight: 200}
 }
 
 .readmedoc h6 {
-    font-size: 11px; opacity: 0.75;
+    font-size: 0.75em; opacity: 0.75;
 }
 
 hr {
@@ -76,7 +82,7 @@ hr {
 .driveheader {
     display: flex; align-items: center;
     flex-wrap: nowrap;
-    gap: 12px; padding: 10px 16px 8px 24px;
+    gap: 1em; padding: 1em;
 }
 
 .searchwrap {flex: 1 1 auto; min-width: 0}
@@ -86,6 +92,16 @@ hr {
     border-radius: 99px;
     height: 3em;
     padding: 0 12px;
+}
+.searchbar .searchinput {min-width: 0}
+.searchbar .viewtoggle.insearch {
+    margin-left: auto;
+    height: calc(3em - 10px);
+    padding: 3px;
+    background: rgba(0,0,0,0.18);
+}
+.searchbar .viewtoggle.insearch .viewbutton {
+    height: calc(3em - 16px);
 }
 .searchinput {
     font-family: "google sans";
@@ -161,7 +177,7 @@ hr {
 .refreshtime {
     position: absolute;
     left: 50%;
-    top: calc(100% + 2px);
+    top: calc(100% - 10px);
     transform: translateX(-50%);
     font-size: 0.7em;
     color: #9aa0a6; line-height: 1.1;
@@ -306,20 +322,35 @@ hr {
     border-inline-end: none;
 }
 
-@media (max-aspect-ratio: 3/4) {
-    .readmebutton {z-index: 1}
-}
-
-@media (max-width: 900px) {
+@media (max-width: 770px) {
     .driveheader {
-        gap: 8px;
-        padding-inline: 12px;
+        display: grid;
+        grid-template-columns: 40px 1fr auto;
+        grid-template-areas:
+            "back . actions"
+            "search search search";
+        align-items: center;
+        column-gap: 10px;
+        row-gap: 10px;
     }
-    .searchbar {
-        padding: 0.55em 0.7em;
+    .backbutton {grid-area: back}
+    .searchwrap {grid-area: search}
+    .headercontrols {grid-area: actions; justify-self: end}
+    .headeractions {display: contents}
+
+    .appshell.readmeopen .drivemain {display: none}
+    .appshell.readmeopen .readmesidebar {
+        position: fixed;
+        inset: 0;
+        z-index: 400;
+        width: 100% !important;
+        min-width: 0 !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        background: #131314;
     }
-    .headeractions {
-        gap: 6px;
+    .appshell.readmeopen .readmeclose {
+        display: inline-grid;
     }
 }
 
@@ -389,6 +420,8 @@ hr {
     overflow: hidden;
 }
 
+/*//////////////////////////////////////////////////////////////////////*/
+
 .mediacontent {
     max-width: 100%;
     max-height: calc(100vh - 56px);
@@ -419,9 +452,8 @@ hr {
 
 .mediaregion {
     position: absolute;
-    border: 1px solid rgba(138, 180, 248, 0.95);
+    border: 1px solid rgba(248, 138, 138, 0.9);
     background: rgba(138, 180, 248, 0.1);
-    border-radius: 4px;
 }
 
 .mediainfo {

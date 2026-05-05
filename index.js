@@ -19,6 +19,7 @@
     backbutton = document.querySelector(".backbutton"),
     readmebutton = document.querySelector(".readmebutton"),
     commentsbutton = document.querySelector(".commentsbutton"),
+    readmeclose = document.querySelector(".readmeclose"),
     medialightbox = document.querySelector(".medialightbox"),
     mediabackdrop = document.querySelector(".mediabackdrop"),
     mediaclose = document.querySelector(".mediaclose"),
@@ -100,7 +101,7 @@
       .filter((x) => x.path === rootprefix || x.path.startsWith(`${rootprefix}/`))
       .map((x) => ({ ...x, path: x.path.slice(`${rootprefix}/`.length) }))
       .filter((x) => x.path && !x.path.split("/").some((seg) => seg.startsWith(".")));
-    return { tree: filtered, branch: state.branch, truncated: !!tree.truncated };
+    return {tree: filtered, branch: state.branch, truncated: !!tree.truncated};
   }
 
   function listchildren(prefix) {
@@ -452,6 +453,7 @@
   viewsquare.addEventListener("click", () => setview(false));
   if (backbutton) backbutton.addEventListener("click", gobackfolder);
   if (readmebutton) readmebutton.addEventListener("click", togglereadme);
+  if (readmeclose) readmeclose.addEventListener("click", togglereadme);
   if (commentsbutton) commentsbutton.addEventListener("click", () => {
     setcommentsopen(!state.commentsOpen);
     if (medialightbox && !medialightbox.hidden) {
