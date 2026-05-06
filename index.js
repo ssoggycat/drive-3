@@ -9,6 +9,7 @@
     videoext = /\.(mp4|webm|mov|mkv)$/i,
     audioext = /\.(mp3|wav|ogg|flac|m4a|aac)$/i;
 
+  // holy bloat
   const drivegrid = document.querySelector(".drivegrid"),
     searchinput = document.querySelector(".searchinput"),
     refreshbutton = document.querySelector(".refreshbutton"),
@@ -20,10 +21,14 @@
     readmebutton = document.querySelector(".readmebutton"),
     commentsbutton = document.querySelector(".commentsbutton"),
     readmeclose = document.querySelector(".readmeclose"),
+    discordavatarbutton = document.querySelector(".discordavatarbutton"),
+    discordavatar = document.querySelector(".discordavatar"),
     medialightbox = document.querySelector(".medialightbox"),
     mediabackdrop = document.querySelector(".mediabackdrop"),
     mediaclose = document.querySelector(".mediaclose"),
     mediacontent = document.querySelector(".mediacontent"),
+    medianavleft = document.querySelector(".medianav-left"),
+    medianavright = document.querySelector(".medianav-right"),
     mediaregionlayer = document.querySelector(".mediaregionlayer"),
     medicomments = document.querySelector(".mediacomments"),
     medicommentslist = document.querySelector(".mediacommentslist"),
@@ -32,11 +37,14 @@
 
   const commentsIndexApi = "https://api.soggy.cat/v1/comments";
   const commentscache = new Map();
+
   let commentsindexpromise = null;
   let commentsindexbyfile = null;
   let lightboxfilename = "";
   let lightboxcomments = [];
   let lightboximg = null;
+  let lightboxnavitems = [];
+  let lightboxnavindex = -1;
 
   const state = {
     tree: [], branch: "main",
@@ -44,6 +52,69 @@
     listmode: false, truncated: false,
     commentsOpen: false,
   };
+
+  /*//////////////////////////////////////////////////////////////////////*/
+
+  function discordLoggedIn() {
+    return !!getsetting("discord_user", null) || !!getsetting("discord_code", "");
+  }
+  function updateDiscordAvatar() {
+    if (!discordavatar) return;
+    const u = getsetting("discord_user", null);
+    const src = (u && typeof u === "object" && typeof u.avatar === "string" && u.avatar) ? u.avatar : "assets/images/placeholder.png";
+    discordavatar.src = src;
+  }
+
+  function buildDiscordAuthorizeUrl() {
+    const base = "https://discord.com/oauth2/authorize";
+    const redirect = `${location.origin}${location.pathname}`;
+    const st = Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2);
+    setsetting("discord_oauth_state", st);
+    const qs = new URLSearchParams({
+      client_id: "1501279291848003744",
+      response_type: "code",
+      redirect_uri: redirect,
+      scope: "identify",
+      state: st,
+    });
+    return `${base}?${qs.toString()}`;
+  }
+
+  function openDiscordPopup() {
+    const url = buildDiscordAuthorizeUrl();
+    const w = 480, h = 720;
+    const left = Math.max(0, Math.floor((window.screen.width - w) / 2));
+    const top = Math.max(0, Math.floor((window.screen.height - h) / 2));
+    const feat = `popup=yes,width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`;
+    const win = window.open(url, "discord_oauth", feat);
+    if (win) win.focus();
+  }
+
+  function handleDiscordOAuthCallbackIfPresent() {
+    const sp = new URLSearchParams(location.search || "");
+    const code = sp.get("code");
+    const incomingState = sp.get("state");
+    if (!code) return;
+
+    const expected = getsetting("discord_oauth_state", "");
+    if (expected && incomingState && incomingState !== expected) {
+      // state mismatch: don't accept
+      sp.delete("code"); sp.delete("state");
+      history.replaceState({}, "", `${location.pathname}${sp.toString() ? `?${sp.toString()}` : ""}${location.hash || ""}`);
+      return;
+    }
+
+    try { setsetting("discord_code", code); } catch (_) { }
+    updateDiscordAvatar();
+
+    if (window.opener && window.opener !== window) {
+      try { window.opener.postMessage({ type: "discord_oauth_code", code }, location.origin); } catch (_) { }
+      window.setTimeout(() => { try { window.close(); } catch (_) { } }, 60);
+    }
+
+    sp.delete("code"); sp.delete("state");
+    history.replaceState({}, "", `${location.pathname}${sp.toString() ? `?${sp.toString()}` : ""}${location.hash || ""}`);
+  }
 
   function loadsettings() {
     try {
@@ -120,7 +191,7 @@
       .filter((x) => x.path === rootprefix || x.path.startsWith(`${rootprefix}/`))
       .map((x) => ({ ...x, path: x.path.slice(`${rootprefix}/`.length) }))
       .filter((x) => x.path && !x.path.split("/").some((seg) => seg.startsWith(".")));
-    return {tree: filtered, branch: state.branch, truncated: !!tree.truncated};
+    return { tree: filtered, branch: state.branch, truncated: !!tree.truncated };
   }
 
   function listchildren(prefix) {
@@ -147,10 +218,10 @@
   }
 
   function updatereadmepreference(open) {
-    setsetting(mqnarrow.matches ? "readmeNarrow" : "readmeWide", open ? 1 : 0);
+    setsetting(mqnarrow.matches ? "readmenarrow" : "readmewide", open ? 1 : 0);
   }
   function readmestartstate() {
-    return mqnarrow.matches ? getsetting("readmeNarrow", 0) === 1 : getsetting("readmeWide", 1) !== 0;
+    return mqnarrow.matches ? getsetting("readmenarrow", 0) === 1 : getsetting("readmewide", 1) !== 0;
   }
   function togglereadme() {
     if (!googeldraiv) return;
@@ -245,7 +316,7 @@
     state.commentsOpen = show;
     if (commentsbutton)
       commentsbutton.classList.toggle("commentsmuted", !show);
-    setsetting("commentsEnabled", show ? 1 : 0);
+    setsetting("commentson", show ? 1 : 0);
   }
 
   async function loadcommentsindex() {
@@ -297,11 +368,23 @@
     medicommentslist.innerHTML = "";
     const login = document.createElement("div");
     login.className = "mediacomment";
+    const loggedin = discordLoggedIn();
     login.innerHTML =
       `<div class="mediacommenttext">` +
-      `<a class="discordlogin" href="https://discord.com/oauth2/authorize?client_id=1501279291848003744&response_type=code&redirect_uri=http%3A%2F%2F127.0.0.1%3A6969&scope=identify" target="_blank" rel="noopener noreferrer">sign in with discord</a>` +
+      (loggedin
+        ? `<button type="button" class="discordlogout">sign out</button>`
+        : `<button type="button" class="discordloginbutton">sign in with discord</button>`) +
       `</div>`;
     medicommentslist.appendChild(login);
+    const loginbtn = login.querySelector(".discordloginbutton");
+    if (loginbtn) loginbtn.addEventListener("click", openDiscordPopup);
+    const logoutbtn = login.querySelector(".discordlogout");
+    if (logoutbtn) logoutbtn.addEventListener("click", () => {
+      setsetting("discord_code", "");
+      setsetting("discord_user", null);
+      updateDiscordAvatar();
+      rendercommentpanel(comments);
+    });
     if (!comments.length) {
       const empty = document.createElement("div");
       empty.className = "mediacomment";
@@ -377,6 +460,17 @@
     mediainfo.textContent = pathname.split("/").pop() || pathname;
     const filename = pathname.split("/").pop() || "";
     lightboxfilename = filename;
+
+    // build lightbox navigation list (images only) from current folder
+    const siblings = listchildren(state.cwd)
+      .filter((x) => x.kind === "file" && imageext.test(x.name))
+      .map((x) => ({ url: rawurl(x.path), path: x.path, name: x.name }));
+    lightboxnavitems = siblings;
+    lightboxnavindex = siblings.findIndex((x) => x.path === pathname);
+    const shownav = !video && siblings.length > 1 && lightboxnavindex !== -1;
+    if (medianavleft) { medianavleft.hidden = !shownav; medianavleft.disabled = !shownav; }
+    if (medianavright) { medianavright.hidden = !shownav; medianavright.disabled = !shownav; }
+
     if (video) {
       const v = document.createElement("video");
       v.controls = true;
@@ -402,6 +496,16 @@
     if (mediaclose) mediaclose.focus();
   }
 
+  function stepLightboxImage(delta) {
+    if (!medialightbox || medialightbox.hidden) return;
+    if (!lightboxnavitems.length || lightboxnavindex === -1) return;
+    const next = (lightboxnavindex + delta + lightboxnavitems.length) % lightboxnavitems.length;
+    const item = lightboxnavitems[next];
+    if (!item) return;
+    lightboxnavindex = next;
+    openlightbox(item.url, item.path, false);
+  }
+
   function closelightbox() {
     if (!mediacontent || !medialightbox) return;
     medialightbox.classList.remove("medialightbox-visible");
@@ -414,6 +518,8 @@
       lightboxfilename = "";
       lightboxcomments = [];
       lightboximg = null;
+      lightboxnavitems = [];
+      lightboxnavindex = -1;
       document.body.style.overflow = "";
     }, 220);
   }
@@ -470,6 +576,7 @@
     state.listmode = listmode;
     viewlist.classList.toggle("active", listmode);
     viewsquare.classList.toggle("active", !listmode);
+    setsetting("viewmode", listmode ? "list" : "grid");
     rendergrid();
   }
 
@@ -504,12 +611,26 @@
   });
   if (mediaclose) mediaclose.addEventListener("click", closelightbox);
   if (mediabackdrop) mediabackdrop.addEventListener("click", closelightbox);
+  if (medianavleft) medianavleft.addEventListener("click", () => stepLightboxImage(-1));
+  if (medianavright) medianavright.addEventListener("click", () => stepLightboxImage(1));
+  if (discordavatarbutton) discordavatarbutton.addEventListener("click", openDiscordPopup);
+  window.addEventListener("message", (e) => {
+    if (e.origin !== location.origin) return;
+    const msg = e.data || {};
+    if (msg.type === "discord_oauth_code" && typeof msg.code === "string" && msg.code) {
+      setsetting("discord_code", msg.code);
+      updateDiscordAvatar();
+      if (medialightbox && !medialightbox.hidden) rendercommentpanel(lightboxcomments);
+    }
+  });
   document.addEventListener("keydown", (e) => {
-    if (e.key !== "Escape") return;
     if (medialightbox && !medialightbox.hidden) {
-      closelightbox();
+      if (e.key === "Escape") { closelightbox(); return; }
+      if (e.key === "ArrowLeft") { stepLightboxImage(-1); return; }
+      if (e.key === "ArrowRight") { stepLightboxImage(1); return; }
       return;
     }
+    if (e.key !== "Escape") return;
     if (googeldraiv && mqnarrow.matches && googeldraiv.classList.contains("readmeopen")) {
       googeldraiv.classList.remove("readmeopen");
       updatereadmepreference(false);
@@ -519,7 +640,10 @@
 
   updatebackdisabled();
   updatereadmeicon();
-  setcommentsopen(getsetting("commentsEnabled", 0) === 1);
+  setcommentsopen(getsetting("commentson", 0) === 1);
+  setview(getsetting("viewmode", "grid") === "list");
+  updateDiscordAvatar();
+  handleDiscordOAuthCallbackIfPresent();
   loadtree(false);
 
 })();

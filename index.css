@@ -4,6 +4,27 @@
     font-weight: 300;
 }
 
+/*//////////////////////////////////////////////////////////////////////*/
+
+body {cursor: url("assets/static/cursors/normal.gif"), default}
+a, :any-link {cursor: url("assets/static/cursors/link.png"), pointer}
+button, .button, input[type="button"], input[type="submit"] {cursor: url("assets/static/cursors/alternate.png"), pointer}
+input[type="text"], input[type="search"], textarea {cursor: url("assets/static/cursors/text.png"), text}
+[contenteditable="true"] {cursor: url("assets/static/cursors/handwriting.png"), text}
+.disabled, [disabled], [aria-disabled="true"] {cursor: url("assets/static/cursors/unavailable.png"), not-allowed}
+.waiting, .loading {cursor: url("assets/static/cursors/busy.gif"), wait}
+.help, [aria-label="help"] {cursor: url("assets/static/cursors/help.gif"), help}
+.precise, .crosshair {cursor: url("assets/static/cursors/precision.png"), crosshair}
+.resizer.horizontal, .col-resize, .ew-resize {cursor: url("assets/static/cursors/hresize.png"), ew-resize}
+.resizer.vertical, .row-resize, .ns-resize {cursor: url("assets/static/cursors/vresize.png"), ns-resize}
+.nwse-resize {cursor: url("assets/static/cursors/diagonalleft.png"), nwse-resize}
+.nesw-resize {cursor: url("assets/static/cursors/diagonalright.png"), nesw-resize}
+[draggable="true"], .move, .grab {cursor: url("assets/static/cursors/move.png"), move}
+.discordavatar, /*/*/ .avatar, .person {cursor: url("assets/static/cursors/person.png"), pointer}
+.location, .pin {cursor: url("assets/static/cursors/location.png"), pointer}
+
+/*//////////////////////////////////////////////////////////////////////*/
+
 *, *::before, *::after {box-sizing: border-box; scrollbar-width: none}
 *::-webkit-scrollbar {width: 0; height: 0}
 
@@ -112,6 +133,23 @@ hr {
 .headercontrols {
     display: flex;
     align-items: center;
+}
+
+.discordavatarbutton {
+    width: 3em; height: 3em;
+    margin: 0 0 0 0.25em; padding: 0;
+    border: none;  border-radius: 50%;
+    background: transparent;
+    cursor: pointer; display: grid;
+    place-items: center;
+}
+.discordavatarbutton:hover {background: #232324}
+
+.discordavatar {
+    border-radius: 50%;
+    object-fit: cover;
+    background: #0f1011;
+    border: 1px solid rgba(255,255,255,0.12);
 }
 
 .headericonbutton {
@@ -294,6 +332,7 @@ hr {
 .filegrid.listmode .thumb {
     width: 72px; min-width: 72px;
     aspect-ratio: 1;
+    order: -1;
 }
 .filegrid.listmode .filehead {flex: 1}
 
@@ -399,6 +438,24 @@ hr {
     justify-content: center;
     overflow: hidden;
 }
+
+/*//////////////////////////////////////////////////////////////////////*/
+
+.medianav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    background: rgba(19, 19, 20, 0.55);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(6px);
+}
+.medianav:hover {background: rgba(30, 31, 32, 0.85)}
+.medianav-left {left: 12px}
+.medianav-right {right: 12px}
 
 /*//////////////////////////////////////////////////////////////////////*/
 
@@ -548,4 +605,19 @@ hr {
     font-size: 13px;
     color: #e0e0e0;
     word-break: break-word;
+}
+
+.discordloginbutton,
+.discordlogout {
+    font: inherit;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(138,180,248,0.25);
+    background: rgba(138,180,248,0.08);
+    color: #8ab4f8;
+    cursor: pointer;
+}
+.discordloginbutton:hover,
+.discordlogout:hover {
+    background: rgba(138,180,248,0.14);
 }
