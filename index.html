@@ -1,4 +1,38 @@
 <!DOCTYPE html>
+<!--⡮⣚⢮⡺⣪⢞⡵⣹⢎⢷⡹⣎⢷⡹⣎⢷⡹⣎⢷⡹⣎⢷⡹⣎⢷⡹⣎⢷⡹⣎⢷⡝⣮⡳⣝⢮⡳⣝⢮⡳⣝⢮⡳⣝⢮⡺⣕
+⢜⣎⢷⡹⣎⢷⡹⣎⢷⡹⣎⢷⡹⣎⢷⡝⣮⣎⢷⡹⢮⡳⣝⢾⢕⡯⣞⡵⣫⣞⢵⡻⣪⢷⣝⢮⢯⡺⣳⡝⡾⡕⡋⣊⢱⡫⣮⢳⢝⡮
+⣍  /\  /\___| | | ___   / \⡳⣽⣪⢟⣵⡫⣮⡻⣪⢞⡵⣫⡳⣗⡽⣳⣝⡽⡪⢋⠊⡔⢌⢦⣝⢞⡵⣫⡳⣝
+⢦ / /_/ / _ \ | |/ _ \ /  /⡻⡮⣺⡳⣵⡻⡼⡝⡮⡫⢚⠕⡝⢎⠳⡑⠄⢔⠠⡢⡱⡩⣪⢶⡝⣽⢪⡗⣽⡪
+⡕/ __  /  __/ | | (_) /\_/ ⣛⢾⢕⣟⢜⡕⡑⢌⠰⡨⢂⠕⠨⡂⢕⢌⠪⡢⡓⡵⡩⣮⡳⣝⣮⢳⢯⡺⡵⣝
+⢜\/ /_/ \___|_|_|\___/\/   ⣫⡳⣝⣮⢗⡿⣜⡵⡨⡢⢂⠌⠢⡈⢆⠠⠃⠜⡘⢜⢵⡳⣝⢞⣮⢳⣏⢾⣕⢯
+⡸⡕⡵⡩⡮⡪⡞⣜⢕⢧⢫⢞⡜⡧⡳⠑⠕⡡⢃⠜⣔⢟⢾⣪⢟⢾⢵⣻⣪⢪⢆⠪⡂⡒⢄⠊⠄⢁⠀⡑⢕⡽⣪⢟⡼⣳⢕⡷⣕⢟
+⡸⡪⣚⢜⢎⢞⢜⢎⡳⢕⢏⠮⢊⠊⢌⠨⢂⠔⠡⢊⢌⡫⡳⣭⡫⣗⢯⢾⡵⣫⣯⣳⣌⢪⡐⠁⠈⠢⡢⡨⢣⡻⣵⣫⡻⡮⣳⣝⢮⡻
+⠸⡪⡪⡣⠫⠪⠃⠋⢈⠁⡀⠂⠠⠂⢐⠈⢄⠍⠊⠔⠠⡈⡚⣜⠮⡳⣝⢮⡻⣵⣳⡵⣻⢶⡠⠀⢁⠀⠨⡂⠡⢊⠮⣞⢵⡻⡮⣺⡕⣿
+⠈⡡⠠⡀⠢⡐⠠⡁⢄⠢⠐⢈⠀⠂⠄⢌⠠⠈⠄⠑⠀⠢⢈⢎⢮⢓⡝⣮⢛⡮⣞⡽⣫⣷⢧⣀⠀⠄⡑⠁⡌⠢⣙⢞⢷⡝⡾⣕⢯⢾
+⠲⣄⡣⡘⢌⠢⡑⢌⠄⡊⢀⠂⠠⠁⡂⠔⠀⠀⠄⠀⠀⠀⡀⠐⢵⡹⣪⢎⡯⡺⣮⢫⢾⡵⣻⢷⣕⢄⠨⡐⠌⠢⡨⣯⡳⣝⡽⣪⢗⣯
+⠪⢦⡱⡙⡆⢗⢬⡂⢎⠄⢅⠄⡁⠢⢐⠈⡀⡑⠐⠁⠈⡀⠠⠂⠀⢯⡺⣪⢞⣝⢮⣫⢗⣽⢳⣏⣟⢷⣕⢌⢌⠦⡱⣮⡻⣜⢯⡺⣕⢷
+⡑⢧⢪⡪⡪⣓⢜⠬⡣⡓⢦⢀⠐⠠⠂⠅⢄⠘⠄⠀⠀⠐⡨⠂⡀⠘⡵⣣⢯⡪⣗⢽⡱⣏⢷⣝⢾⣫⢟⡷⣳⡮⣳⣝⢮⣫⢗⡽⣣⢟
+⢓⡕⡕⢎⠮⡪⡪⢕⢕⢍⢆⠣⡐⡁⡑⠨⢀⠢⢈⠄⡡⡈⡠⣢⢗⣞⢵⢳⢕⢯⢺⢕⢯⡺⡵⣝⢵⡝⣽⢝⣯⢿⡺⣮⢳⣝⡵⣫⢞⣵
+⡜⣜⢪⡣⡫⡪⡪⡣⡣⡣⡱⡑⠔⡨⢀⠅⠠⠂⡠⠂⠢⢪⢞⣵⡫⣞⡵⣫⢎⡳⣍⠷⣱⢫⢞⢵⡫⡺⣕⢯⡺⣻⣟⡮⡷⡵⣝⢧⡻⣪
+⢜⡬⣪⢪⡚⡜⢎⢎⢎⢎⡪⣊⢎⠐⢄⠊⢄⠡⡀⡪⢐⢯⡻⣜⢯⣞⡵⣳⢕⢧⠪⣕⢣⡫⣓⢵⡙⢮⢪⢎⣳⣻⣞⣟⢾⢕⣯⢺⡝⣮
+⢊⢎⢖⠵⣩⢪⡓⣕⢕⢕⢜⢔⢅⠳⡀⠣⠢⡈⢔⠡⡣⡳⡹⡮⣳⢵⡫⣞⢵⣫⡑⡎⡢⢣⠪⢆⢝⢕⢕⢧⡻⣮⢷⣫⢗⡯⣺⢵⡫⡾
+⣍⠮⡣⡫⡲⡱⡕⡪⡪⡱⡱⡡⡣⡑⢅⢣⡑⣌⢪⡕⣵⡙⡼⣕⢯⡪⣗⢝⢮⡪⣝⢮⡺⢦⡱⡨⡪⢢⢣⣝⡽⣝⢷⡹⡧⣻⢕⡯⣺⢝
+⢰⡙⡎⢞⢜⡪⡪⡪⡪⡪⡪⢪⢢⢑⢅⠸⣕⢮⡪⡺⣢⢏⢞⢎⡗⣝⡪⣫⢎⡞⣜⢵⡹⣕⢯⢺⠢⣣⢳⢮⢞⣝⢧⡻⣞⢵⣛⢾⢕⡿
+⡡⡝⢜⢕⢕⢎⢎⢎⢎⢪⠪⡢⡑⢅⠢⡁⢞⢵⢝⡵⣣⢏⡞⡵⣝⢜⢮⡱⣣⢫⢮⢪⢞⢜⢎⡣⡱⡵⣫⡳⣫⢞⡵⣫⢞⡵⣝⢧⡻⡺
+⢘⢜⢊⠖⣅⠣⡪⠢⡃⢕⠡⡊⢌⠢⡑⠄⠘⢧⡫⣺⢪⡮⣹⢎⡮⣫⡳⣝⢮⡳⣧⣳⣕⢧⣳⡕⠋⠊⠁⢙⡪⣳⢝⢮⡫⣞⢮⡳⣝⢽
+⢀⠇⢜⠰⡈⢎⠰⡡⢃⠪⡘⠔⡡⢊⠔⡡⢊⠘⡎⡷⡱⡳⣕⢝⡮⣣⢯⡺⣝⢵⡳⡽⣞⣯⢟⡴⠡⠐⠔⠖⢝⢜⢧⡫⣞⢼⡕⣵⢣⢟
+⠠⢃⢌⠢⡑⢌⠢⢊⠔⡡⢊⢌⠢⣑⠜⠌⠀⡀⠘⢜⡹⡪⣪⢣⢯⡪⡞⡼⣪⢳⣝⢾⣯⠓⡵⡱⠁⠣⡐⠄⠄⠄⢄⠁⠓⡑⠝⠰⡕⡯
+⠊⢔⢁⠪⡐⠡⡊⢔⠡⡊⢔⠢⡣⠊⠐⠀⢄⢈⠢⠀⠌⠪⡱⡣⡳⡕⣝⢎⢗⡵⣹⠳⡑⡩⡒⠈⠀⠠⠈⠊⢊⠆⢄⣅⣱⡠⣊⡐⠈⠐
+⠃⡢⢁⢊⠔⡡⢊⠄⡕⡨⢢⠣⠈⠀⡀⢊⠠⠢⡀⠑⠐⠄⢨⠘⢜⠎⠮⡣⡫⠪⠃⡑⢠⠊⠀⠀⠂⡀⠠⠀⠅⡴⡪⢦⢣⢎⢮⢩⡫⠲
+⠌⡐⡡⠢⡈⠢⢂⠕⡌⡊⠂⠄⠀⠔⡈⢄⠅⡌⢢⠑⢄⠁⠢⠐⡀⢂⠐⠀⠄⠨⠀⢄⠣⠁⠀⠁⠀⠀⠀⠀⡺⡜⣕⢳⡱⡱⡱⡱⢜⢥
+⠂⢌⠐⡌⠨⡊⡢⠑⠌⠠⠁⠌⠐⡁⠐⠐⡌⡢⢡⢊⠄⠕⢄⠈⡐⡀⡁⠢⢈⠀⡡⡪⡁⠀⠀⠀⠀⠀⠀⢈⠞⡜⡪⡕⣕⢭⢪⡪⡪⡲
+⠨⡠⢑⠨⡂⢕⠈⠌⢂⠡⢈⠄⡁⠀⠀⠈⢄⠑⡄⢱⢈⠎⢊⠐⡄⠠⠈⠔⢀⠅⡠⠑⠌⠀⠀⠀⠀⠀⠀⠠⣫⢪⢎⠮⣢⢣⢓⢜⠪⣎
+⢀⠢⡑⠌⠂⠔⢈⠂⡐⢀⠂⠄⢂⠈⡀⠀⡀⠨⠐⢅⠪⡂⢡⠊⡐⠕⡰⢀⠅⠢⡐⠈⠀⠀⠀⠀⠈⠀⢀⠀⢳⠱⡋⢞⢔⢣⢋⢎⠕⡜
+⠀⡣⢈⠐⡁⠌⡀⢂⠐⠠⠁⢂⠁⡐⠄⡀⠀⠀⠈⠠⠃⡪⡠⡑⢌⠪⢂⠢⠘⠔⠠⠈⠠⠀⠁⠀⠁⡀⠀⠄⠈⡎⢜⠰⡡⢣⢑⢌⢆⠹
+⠡⠐⡀⢂⠐⡀⠢⠀⠅⡨⠀⠅⡐⢀⠢⠀⠌⠀⠁⠀⠀⠂⠌⡘⢔⠡⡁⡊⠜⠠⡁⠌⡀⠀⠀⠀⠠⠀⠀⠂⡀⠘⢕⢍⢎⡢⠱⡐⡅⡣
+⠀⢂⠐⡀⠢⠀⠅⠨⠠⠠⡈⢐⠀⠢⠀⢅⠈⠂⠄⠁⠀⠂⠀⠀⠢⢂⢌⠐⡁⠢⠐⡐⡀⠑⠀⢀⠀⠄⡈⠠⠀⠄⠈⢦⢑⢌⢊⠢⡪⡘
+-->
+
 <html lang="en">
   <head>
 
@@ -7,38 +41,28 @@
     <title>soggy cat — Soggle Drive</title>
 
     <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="cursor.css" />
     <link rel="stylesheet" href="index.css" />
 
   </head>
   <body>
-    <div class="googeldraiv">
+    <div class="goog">
       <aside class="readmesidebar">
         <div class="readmescroll">
           <article class="readmedoc doccontent">
-            <button type="button" class="readmeclose headericonbutton" title="close readme">
+            <div class="readmebar">
+              <button type="button" class="readmeclose headericonbutton" title="close readme">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#aac1f0" viewBox="0 -960 960 960">
                 <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80z"/>
               </svg>
-            </button>
-            <img src="assets/images/banner.png" alt="&quot;the soggy drive&quot;. an image of shark sitting in grass is visible to the right.">
-            <h3>heyo!! hey!!!</h3>
-            <p>this is a compilation of all known images of shark. biscuit, the owner, vanished from the internet and we are now trying to find any remaining photos taken of the cat..</p>
-            <p>the current search is mostly halted, as after <a href="https://twitter.com/cvsilly_/status/1892986721408598310" target="_blank">searching through all of the web archives</a> there are no candidates for places to search through.. still, there are fixes / missed images being uploaded from time to time</p>
-            <p>you can leave comments on images if you'd like!</p>
-            <p><sup><a href="https://drive.soggy.cat" target="_blank">drive #1</a> (by lily) • <a href="https://drive2.soggy.cat" target="_blank">drive #2</a> (by cv)</sup><br>
-            <a href="https://discord.gg/soggycat" target="_blank" style="color:#9ba3ff">discord</a> // <a href="https://twitter.com/ssoggycat" target="_blank" style="color:#8ad2ff">twitter</a> // <a href="https://s.soggy.cat" target="_blank" style="color:#ffdd9d">other</a></p>
-            <hr>
-            <h4><strong>file names</strong></h4>
-            <p>each image has a random self-explanatory name (or an inside joke) assigned for convenience. despite keeping the exact same data, all of the .jpeg files are renamed to .jpg to be compatible with other services.</p>
-            <h4><strong>quality</strong></h4>
-            <p>there are so many shark images that new ones sometimes get found in the most bizzare places, or might just not be fully processed in the web archives. that's why the uploads here might have really low resolution. check google lens / messages on soggy world, there might be higher quality versions just laying out there</p>
-            <h4><strong>image-specific</strong></h4>
-            <p><em>(uncropped)</em> - a lower quality image but with less / no space around it cropped. <br>
-            <em>(hq)</em> - a notable higher quality version. they're mostly unlabeled</p>
-            <p><em>"IT'S SNOWING IT'S SNOWING IT'S SNOWING.png"</em> was taken from biscuit's old tiktok video and has the file name as the caption. i've included a captionless image since that one is used more often</p>
-            <p><em>“wire.mp4”</em> was ripped from a now deleted youtube video named “soggy cat found footage”, that’s why there was a siren going off it was found by marcus3205, and is now replaced with the full quality video</p>
-            <hr>
-            <h6>ssoggycat software division (2022-2026)</h6>
+              </button>
+              <div class="readmenav">
+                <button type="button" class="headericonbutton readmenavbtn" data-doc="README.md">info</button>
+                <button type="button" class="headericonbutton readmenavbtn" data-doc="INFOFILES.md">file info</button>
+                <button type="button" class="headericonbutton readmenavbtn" data-doc="QNA.md">q&a</button>
+              </div>
+            </div>
+            <div class="readmecontent"></div>
           </article>
         </div>
       </aside>
@@ -87,7 +111,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#aac1f0" class="commentsicon commentsicon-on" viewBox="0 -960 960 960">
                   <path d="M240-400h480v-80H240zm0-120h480v-80H240zm0-120h480v-80H240zM880-80 720-240H160q-33 0-56-23t-24-57v-480q0-33 24-56t56-24h640q33 0 57 24t23 56zM160-320h594l46 45v-525H160zm0 0v-480z"/>
                 </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#aac1f0" class="commentsicon commentsicon-off" viewBox="0 -960 960 960">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#aac1f0" class="commentsicon commentsiconoff" viewBox="0 -960 960 960">
                   <path d="M160-240q-33 0-56-23t-24-57v-447l-53-53 57-57L876-85l-57 57-212-212zm720 45L755-320h45v-480H275l-80-80h605q33 0 57 24t23 56zM160-320h367l-80-80H240v-80h127l-40-40h-87v-80h7l-87-87zm515-80-80-80h125v80zM555-520l-80-80h245v80zM435-640l-80-80h365v80zm80 80"/>
                 </svg>
               </button>
@@ -100,15 +124,32 @@
                 </button>
                 <div class="refreshtime">0h</div>
               </div>
-              <button type="button" class="discordavatarbutton" title="sign in with discord to comment!">
-                <svg class="discordavatar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+              <div class="discordwrap">
+                <button type="button" class="discordavatarbutton" title="account">
+                  <svg class="discordavatar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
                   <path fill="#ccd6dd" d="M-.7-.4h128.8V128H-.7z"/>
                   <path fill="#767676" d="m21.8 127.3.7-3.2a44 44 0 0 1 34.3-34.4c3.7-.6 10-.6 13.8 0a44 44 0 0 1 35 37.6l.1.7h-84Zm41.7-41c-9.7-2.6-19.5-8-23.3-17.8-5.8-9.1-3.7-21-9.9-29.8-1.8-4.4-14.1-4.3-10.6-10 9.4 0 18.8.2 28.2 1.4 8.2.5 16.3-4.3 24.5-1.6 7.7.6 14.8-4.1 22.6-3 5.3.2 13.4-5.6 16.9-1.4-2.2 6-9.4 7.6-13.4 12-5 3.4-5.3 9.6-6.5 15-.7 5.5-.8 11.7-5 16.6a33 33 0 0 1-17.4 18q-3 .9-6.1.6"/>
-                </svg>
-              </button>
+                  </svg>
+                </button>
+                <div class="discordmenu" hidden>
+                  <div class="discordmenutop">
+                    <div class="discordmenuavatar"></div>
+                    <div class="discordmenuname">not signed in</div>
+                  </div>
+                  <button type="button" class="discordmenulogout" hidden>
+                    <svg height="24" viewBox="0 0 24 24" width="24" focusable="false">
+                      <path fill="#e6e6e6" d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"></path>
+                    </svg>
+                    log out
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </header>
+        <div class="loginhint" hidden>
+          <img src="assets/images/login.png" alt="log in to comment">
+        </div>
 
         <main class="drivecontent">
           <div class="drivegrid" role="main"></div>
@@ -127,12 +168,12 @@
         </button>
         <div class="mediaviewport">
           <div class="mediastage">
-            <button type="button" class="medianav medianav-left headericonbutton" title="previous image" hidden>
+            <button type="button" class="medianav medianavleft headericonbutton" title="previous image" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#9aa0a6" viewBox="0 -960 960 960">
                 <path d="M560-240 320-480l240-240 56 56-184 184 184 184z"/>
               </svg>
             </button>
-            <button type="button" class="medianav medianav-right headericonbutton" title="next image" hidden>
+            <button type="button" class="medianav medianavright headericonbutton" title="next image" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#9aa0a6" viewBox="0 -960 960 960">
                 <path d="M504-480 320-664l56-56 240 240-240 240-56-56z"/>
               </svg>
@@ -142,7 +183,6 @@
             <div class="mediainfo" aria-live="polite"></div>
           </div>
           <aside class="mediacomments" hidden>
-            <div class="mediacommentstitle">comments</div>
             <div class="mediacommentslist"></div>
           </aside>
         </div>

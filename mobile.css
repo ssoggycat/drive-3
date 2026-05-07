@@ -1,0 +1,23 @@
+@media (max-width: 770px) {
+    .driveheader {
+        display: grid; grid-template-columns: 40px 1fr auto;
+        grid-template-areas:
+            "back . actions"
+            "search search search";
+        align-items: center; column-gap: 10px;
+        row-gap: 10px;
+    }
+    .backbutton {grid-area: back}
+    .searchwrap {grid-area: search}
+    .headercontrols {grid-area: actions; justify-self: end}
+    .headeractions {display: contents}
+
+    .goog.readmeopen .drivemain {display: none}
+    .goog.readmeopen .readmesidebar {
+        position: fixed; inset: 0;
+        z-index: 400; width: 100% !important;
+        min-width: 0 !important; opacity: 1 !important;
+        pointer-events: auto !important; background: #131314;
+    }
+    .goog.readmeopen .readmeclose {display: inline-grid}
+}

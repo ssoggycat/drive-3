@@ -1,16 +1,15 @@
-name: Deploy static content to Pages
+# i've never used the actions yml before.. - cv
+# though i already have an advice to tweak some of it before committing - cv to mat
+name: deploy static stuff to github pages
 
 on:
   push:
     branches: ["main"]
-
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -26,47 +25,77 @@ jobs:
         uses: actions/checkout@v4
         with:
           sparse-checkout: 'soggy cat'
-      - name: Install FFmpeg
+      - name: install ffmpeg
         uses: FedericoCarboni/setup-ffmpeg@v3.1
-      - name: Install WebP
+      - name: install webp
         run: |
           sudo rm -f /var/lib/man-db/auto-update
           sudo apt-get install -y webp
-      - name: Generate WebP Drive
+      - name: webp generator
         run: |
-          mkdir "soggy cat"/webp
-          find "soggy cat"/* -maxdepth 0 -type f -print0 | xargs -P 4 -0 -I {} bash -euo pipefail -c '
+          mkdir -p "soggy cat/webp"
+
+          # webps for images
+          # this goes into mirror.guweh.com/webp
+
+          find "soggy cat"/* -maxdepth 0 -type f ! -path "soggy cat/vids/*" -print0 | xargs -P 4 -0 -I {} bash -euo pipefail -c '
             filename=$(basename "{}")
-            dims=($(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=nw=1:nk=1 "{}"))
-            width=${dims[0]}
-            height=${dims[1]}
+            dims=($(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=nw=1:nk=1 "{}" || echo ""))
+            width=${dims[0]:-}
+            height=${dims[1]:-}
             cwebp_resize=""
             ffmpeg_resize=""
-            if [ "$width" -gt 1024 ] || [ "$height" -gt 1024 ]; then
-              if [ "$width" -ge "$height" ]; then
-               cwebp_resize="-resize 1024 0"
-               ffmpeg_resize="1024:-1"
-              else
-                cwebp_resize="-resize 0 1024"
-                ffmpeg_resize="-1:1024"
+            if [[ -n "$width" && -n "$height" ]]; then
+              if [ "$width" -gt 1024 ] || [ "$height" -gt 1024 ]; then
+                if [ "$width" -ge "$height" ]; then
+                  cwebp_resize="-resize 1024 0"
+                  ffmpeg_resize="1024:-1"
+                else
+                  cwebp_resize="-resize 0 1024"
+                  ffmpeg_resize="-1:1024"
+                fi
               fi
             fi
             if ! cwebp -preset photo -mt -quiet -alpha_filter none -noalpha -sharp_yuv -q 70 $cwebp_resize "{}" -o "soggy cat/webp/${filename%.*}.webp"; then
               ffmpeg -v error -i "{}" -vf "scale=$ffmpeg_resize" -quality 70 -compression_level 6 "soggy cat/webp/${filename%.*}.webp"
             fi
           '
-      - name: Make Lists
+
+          # webps for videos
+          # this goes into mirror.guweh.com/webp/vids
+
+          if [ -d "soggy cat/vids" ]; then
+            find "soggy cat/vids"/* -maxdepth 0 -type f -print0 | xargs -P 4 -0 -I {} bash -euo pipefail -c '
+              filename=$(basename "{}")
+              # Extract a thumbnail (first frame) as webp, resize if needed
+              dims=($(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=nw=1:nk=1 "{}" || echo ""))
+              width=${dims[0]:-}
+              height=${dims[1]:-}
+              resize=""
+              if [[ -n "$width" && -n "$height" ]]; then
+                if [ "$width" -gt 1024 ] || [ "$height" -gt 1024 ]; then
+                  if [ "$width" -ge "$height" ]; then
+                    resize="-vf scale=1024:-1"
+                  else
+                    resize="-vf scale=-1:1024"
+                  fi
+                fi
+              fi
+              ffmpeg -y -v error -i "{}" -vframes 1 $resize -compression_level 6 "soggy cat/webp/${filename%.*}.webp"
+            '
+          fi
+      - name: make lists
         run: |
           cd 'soggy cat'
           find * -maxdepth 0 -type f | jq -R . | jq -s . > images.json
           find vids/* -maxdepth 0 -type f | jq -R . | jq -s . > videos.json
           find webp/* -maxdepth 0 -type f | jq -R . | jq -s . > webp.json
-      - name: Setup Pages
+      - name: configure pages
         uses: actions/configure-pages@v5
-      - name: Upload artifact
+      - name: upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'soggy cat'
-      - name: Deploy to GitHub Pages
+      - name: finally, deploy!
         id: deployment
         uses: actions/deploy-pages@v4

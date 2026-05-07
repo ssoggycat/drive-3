@@ -1,0 +1,51 @@
+body {cursor: url("assets/static/cursors/normal.gif"), default}
+a, :any-link {cursor: url("assets/static/cursors/link.png"), pointer}
+
+button, .button, 
+input[type="button"], input[type="submit"] 
+{cursor: url("assets/static/cursors/alternate.png"), pointer}
+
+input[type="text"], input[type="search"], textarea, ::selection, .selectable, 
+.readmesidebar *::selection, 
+:is(b, s, i, p, span, em, li, ul, br,
+    input, textarea,
+    h1, h2, h3, h4, h5, h6):is(.readmesidebar *), 
+[contenteditable="plaintext-only"], 
+[contenteditable="true"] *::selection
+{cursor: url("assets/static/cursors/text.png"), text}
+
+[contenteditable="true"] 
+{cursor: url("assets/static/cursors/handwriting.png"), text}
+
+.disabled, [disabled], [aria-disabled="true"] 
+{cursor: url("assets/static/cursors/unavailable.png"), not-allowed}
+
+.waiting, .loading 
+{cursor: url("assets/static/cursors/busy.gif"), wait}
+
+.help, [aria-label="help"] 
+{cursor: url("assets/static/cursors/help.gif"), help}
+
+.precise, .crosshair 
+{cursor: url("assets/static/cursors/precision.png"), crosshair}
+
+.resizer.horizontal, .col-resize, .ew-resize 
+{cursor: url("assets/static/cursors/hresize.png"), ew-resize}
+
+.resizer.vertical, .row-resize, .ns-resize 
+{cursor: url("assets/static/cursors/vresize.png"), ns-resize}
+
+.nwse-resize 
+{cursor: url("assets/static/cursors/diagonalleft.png"), nwse-resize}
+
+.nesw-resize 
+{cursor: url("assets/static/cursors/diagonalright.png"), nesw-resize}
+
+[draggable="true"], .move, .grab 
+{cursor: url("assets/static/cursors/move.png"), move}
+
+.discordavatar, .avatar, .person 
+{cursor: url("assets/static/cursors/person.png"), pointer}
+
+.location, .pin 
+{cursor: url("assets/static/cursors/location.png"), pointer}
