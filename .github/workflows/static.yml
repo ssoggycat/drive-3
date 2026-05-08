@@ -65,7 +65,7 @@ jobs:
               ffmpeg -v error -i "{}" $ffmpeg_resize -quality 70 -compression_level 6 "soggy cat/webp/${filename%.*}.webp"
             fi
           '
-      - name: WebP for videos
+      - name: WebP thumbnails for videos
         run: |
           mkdir -p "soggy cat/webp/vids/"
           
@@ -92,7 +92,7 @@ jobs:
           find * -maxdepth 0 -type f | jq -nR '[inputs]' > images.json
           find vids/* -maxdepth 0 -type f | jq -nR '[inputs]' > videos.json
           find webp/* -maxdepth 0 -type f | jq -nR '[inputs]' > webp-images.json
-          find webp/vids/* -maxdepth 0 -type f | jq -nR '[inputs]' > webp-videos.json
+          find webp/vids/* -maxdepth 0 -type f | jq -nR '[inputs]' > webp-video-thumbnails.json
           jq -s 'add' webp-images.json webp-videos.json > webp-all.json
       - name: Setup Pages
         uses: actions/configure-pages@v5
