@@ -93,6 +93,7 @@ jobs:
           find vids/* -maxdepth 0 -type f | jq -nR '[inputs]' > videos.json
           find webp/* -maxdepth 0 -type f | jq -nR '[inputs]' > webp.json
           find webp/vids/* -maxdepth 0 -type f | jq -nR '[inputs]' > webp-video-thumbnails.json
+          jq -s 'add' images.json videos.json > all.json
           jq -s 'add' webp.json webp-video-thumbnails.json > webp-all.json
       - name: Setup Pages
         uses: actions/configure-pages@v5
